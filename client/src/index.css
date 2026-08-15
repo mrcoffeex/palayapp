@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f4fbf7;
+  color: #10241a;
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #95d5b2 transparent;
+}
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+.phone-frame {
+  width: min(430px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: #fff;
+  position: relative;
+}
+
+@media (min-width: 960px) {
+  .mobile-stage {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 10% 10%, rgba(82, 183, 136, 0.18), transparent 28%),
+      radial-gradient(circle at 90% 90%, rgba(11, 61, 46, 0.18), transparent 32%),
+      #0b3d2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+
+  .phone-frame {
+    min-height: 820px;
+    height: min(900px, calc(100vh - 64px));
+    border-radius: 36px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 10px #06251c,
+      0 0 0 12px #52b788,
+      0 40px 80px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.safe-bottom {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom));
+}
