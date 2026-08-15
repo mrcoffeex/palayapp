@@ -19,6 +19,7 @@ export default function Register() {
   });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const submit = async (e) => {
@@ -42,7 +43,7 @@ export default function Register() {
     <div className="min-h-screen bg-forest-50 px-5 py-10">
       <div className="mx-auto max-w-lg">
         <Logo />
-        <h1 className="mt-8 font-display text-3xl text-forest-950">Join PalayApp</h1>
+        <h1 className="mt-8 font-display text-3xl text-forest-950">Join PalayUP</h1>
         <p className="mt-1 text-sm text-forest-600">Farmers list produce. Buyers order with a market price guide. No in-app payments.</p>
         <form onSubmit={submit} className="mt-8 space-y-4 rounded-3xl bg-white p-6 shadow-card">
           <Field label="I am a">
@@ -82,7 +83,30 @@ export default function Register() {
             </Field>
           </div>
           {error && <p className="text-sm text-rose-600">{error}</p>}
-          <Button className="w-full" disabled={busy}>
+          <label className="flex items-start gap-3 text-sm text-forest-700">
+            <input
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-forest-300 text-forest-900"
+              required
+            />
+            <span>
+              I agree to the{" "}
+              <Link to="/terms" className="font-semibold text-forest-900 underline">
+                Terms and Conditions
+              </Link>
+              ,{" "}
+              <Link to="/privacy" className="font-semibold text-forest-900 underline">
+                Privacy Policy
+              </Link>
+              , and{" "}
+              <Link to="/refund" className="font-semibold text-forest-900 underline">
+                Refund Policy
+              </Link>
+            </span>
+          </label>
+          <Button className="w-full" disabled={busy || !acceptedTerms}>
             {busy ? "Creating…" : "Create account"}
           </Button>
         </form>
@@ -90,6 +114,10 @@ export default function Register() {
           Already registered?{" "}
           <Link to="/login" className="font-semibold text-forest-900 underline">
             Sign in
+          </Link>
+          {" · "}
+          <Link to="/docs" className="font-semibold text-forest-900 underline">
+            Documentation
           </Link>
         </p>
       </div>

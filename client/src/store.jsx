@@ -12,7 +12,7 @@ const empty = {
   conversations: [],
   messages: [],
   notifications: [],
-  settings: { appName: "PalayApp" },
+  settings: { appName: "PalayUP" },
 };
 
 export function StoreProvider({ children }) {
@@ -32,9 +32,11 @@ export function StoreProvider({ children }) {
       setData(next);
       setError("");
     } catch (err) {
-      saveToken(null);
-      setToken(null);
-      setData(empty);
+      if (err.status === 401) {
+        saveToken(null);
+        setToken(null);
+        setData(empty);
+      }
       setError(err.message);
     } finally {
       setLoading(false);
@@ -45,9 +47,9 @@ export function StoreProvider({ children }) {
     refresh();
   }, [token]);
 
-  const login = async (email, password) => {
-    const res = await api.login(email, password);
-    saveToken(res.token);
+  const login = async (email, password, remember = false) => {
+    const res = await api.login(email, password, remember);
+    saveToken(res.token, Boolean(remember || res.remember));
     setToken(res.token);
     setLoading(true);
     return res.user;
@@ -55,7 +57,7 @@ export function StoreProvider({ children }) {
 
   const register = async (payload) => {
     const res = await api.register(payload);
-    saveToken(res.token);
+    saveToken(res.token, true);
     setToken(res.token);
     setLoading(true);
     return res.user;

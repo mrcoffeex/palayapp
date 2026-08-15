@@ -1,5 +1,6 @@
 import "dotenv/config";
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
@@ -9,6 +10,7 @@ import multer from "multer";
 import { hash } from "./seed.js";
 import { answerAssistant } from "./ai.js";
 import * as db from "./db.js";
+import { BANTAY_URL, REGIONS, startBantayScheduler, syncGuidePrices } from "./bantayPresyo.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadDir = path.join(__dirname, "uploads");
@@ -50,11 +52,33 @@ app.use("/api/uploads", express.static(uploadDir));
 
 const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
+const ROLES = ["admin", "farmer", "buyer"];
+
 const publicUser = (u) => {
   if (!u) return null;
   const { password, ...rest } = u;
   return rest;
 };
+
+function initials(name) {
+  return String(name || "")
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function locationFrom(body) {
+  const loc = body.location || {};
+  return {
+    address: loc.address || "",
+    city: loc.city || "",
+    province: loc.province || "",
+    lat: Number(loc.lat) || 0,
+    lng: Number(loc.lng) || 0,
+  };
+}
 
 const tokenOf = (req) => (req.headers.authorization || "").replace(/^Bearer\s+/i, "").trim();
 
@@ -94,6 +118,7 @@ const auth = wrap(async (req, res, next) => {
   if (!user) return res.status(401).json({ error: "Please sign in again." });
   if (user.status !== "active") return res.status(401).json({ error: "Account unavailable." });
   req.user = user;
+  await db.touchSession(token);
   next();
 });
 
@@ -105,7 +130,7 @@ function requireRole(...roles) {
 }
 
 app.get("/api/health", wrap(async (_req, res) => {
-  res.json({ ok: true, name: "PalayApp API", database: "mysql" });
+  res.json({ ok: true, name: "PalayUP API", database: "mysql" });
 }));
 
 app.post("/api/auth/login", wrap(async (req, res) => {
@@ -114,9 +139,10 @@ app.post("/api/auth/login", wrap(async (req, res) => {
   const user = await db.getUserByEmail(email);
   if (!user || user.password !== password) return res.status(401).json({ error: "Incorrect email or password." });
   if (user.status !== "active") return res.status(403).json({ error: "This account is suspended." });
+  const remember = Boolean(req.body.remember);
   const token = crypto.randomBytes(24).toString("hex");
-  await db.createSession(token, user.id);
-  res.json({ token, user: publicUser(user) });
+  await db.createSession(token, user.id, { remember });
+  res.json({ token, user: publicUser(user), remember });
 }));
 
 app.post("/api/auth/register", wrap(async (req, res) => {
@@ -148,10 +174,10 @@ app.post("/api/auth/register", wrap(async (req, res) => {
     createdAt: new Date().toISOString(),
   };
   await db.createUser(user);
-  await db.notify("usr_admin", role === "farmer" ? "New farmer registered" : "New buyer registered", `${name} joined PalayApp.`, "user");
+  await db.notify("usr_admin", role === "farmer" ? "New farmer registered" : "New buyer registered", `${name} joined PalayUP.`, "user");
   const token = crypto.randomBytes(24).toString("hex");
-  await db.createSession(token, user.id);
-  res.json({ token, user: publicUser(user) });
+  await db.createSession(token, user.id, { remember: true });
+  res.json({ token, user: publicUser(user), remember: true });
 }));
 
 app.post("/api/auth/logout", auth, wrap(async (req, res) => {
@@ -220,14 +246,77 @@ app.get("/api/users", auth, requireRole("admin"), wrap(async (_req, res) => {
   res.json(users.map(publicUser));
 }));
 
+app.post("/api/users", auth, requireRole("admin"), wrap(async (req, res) => {
+  const { name, email, password, role, phone, farmName, location, status, verified } = req.body;
+  if (!name || !email || !password) return res.status(400).json({ error: "Name, email, and password are required." });
+  if (!ROLES.includes(role)) return res.status(400).json({ error: "Choose admin, farmer, or buyer." });
+  const normalizedEmail = String(email).trim().toLowerCase();
+  if (await db.getUserByEmail(normalizedEmail)) {
+    return res.status(409).json({ error: "That email is already registered." });
+  }
+  const user = {
+    id: await db.nextId("usr"),
+    name: String(name).trim(),
+    email: normalizedEmail,
+    password: hash(password),
+    role,
+    phone: phone || "",
+    farmName: role === "farmer" ? farmName || `${name}'s Farm` : undefined,
+    avatar: initials(name),
+    location: locationFrom({ location }),
+    verified: role === "farmer" ? Boolean(verified) : false,
+    status: status === "suspended" ? "suspended" : "active",
+    createdAt: new Date().toISOString(),
+  };
+  await db.createUser(user);
+  await db.notify(req.user.id, "Account created", `${user.name} was added as ${role}.`, "user");
+  res.status(201).json(publicUser(await db.getUserById(user.id)));
+}));
+
 app.patch("/api/users/:id", auth, requireRole("admin"), wrap(async (req, res) => {
   const user = await db.getUserById(req.params.id);
   if (!user) return res.status(404).json({ error: "User not found." });
-  const allowed = ["status", "verified", "name", "phone", "farmName", "location"];
+  const allowed = ["status", "verified", "name", "email", "password", "role", "phone", "farmName", "location"];
   const fields = {};
   for (const key of allowed) {
     if (req.body[key] !== undefined) fields[key] = req.body[key];
   }
+  if (fields.role && !ROLES.includes(fields.role)) {
+    return res.status(400).json({ error: "Choose admin, farmer, or buyer." });
+  }
+  if (req.user.id === user.id && fields.role && fields.role !== user.role) {
+    return res.status(400).json({ error: "You cannot change your own role." });
+  }
+  if (req.user.id === user.id && fields.status === "suspended") {
+    return res.status(400).json({ error: "You cannot suspend your own account." });
+  }
+  const nextRole = fields.role ?? user.role;
+  const nextStatus = fields.status ?? user.status;
+  if (user.role === "admin" && (nextRole !== "admin" || nextStatus !== "active")) {
+    const activeAdmins = (await db.listUsers()).filter((u) => u.role === "admin" && u.status === "active");
+    if (activeAdmins.length <= 1) {
+      return res.status(400).json({ error: "Cannot remove or suspend the last active admin." });
+    }
+  }
+  if (fields.email) {
+    fields.email = String(fields.email).trim().toLowerCase();
+    const taken = await db.getUserByEmail(fields.email);
+    if (taken && taken.id !== user.id) return res.status(409).json({ error: "That email is already registered." });
+  }
+  if (fields.password) {
+    if (String(fields.password).length < 6) return res.status(400).json({ error: "Password must be at least 6 characters." });
+    fields.password = hash(fields.password);
+  } else {
+    delete fields.password;
+  }
+  if (fields.name) fields.avatar = initials(fields.name);
+  if (nextRole !== "farmer") {
+    fields.farmName = null;
+    fields.verified = false;
+  } else if (fields.farmName === undefined && !user.farmName) {
+    fields.farmName = `${fields.name || user.name}'s Farm`;
+  }
+  if (fields.location) fields.location = locationFrom({ location: fields.location });
   res.json(publicUser(await db.updateUser(user.id, fields)));
 }));
 
@@ -291,6 +380,19 @@ app.delete("/api/products/:id", auth, requireRole("farmer", "admin"), wrap(async
 }));
 
 app.get("/api/guide-prices", auth, wrap(async (_req, res) => res.json(await db.listGuidePrices())));
+
+app.get("/api/guide-prices/sync", auth, requireRole("admin"), wrap(async (_req, res) => {
+  const settings = await db.getSettings();
+  res.json({ ...(settings.bantayPresyo || {}), source: BANTAY_URL, regions: REGIONS });
+}));
+
+app.post("/api/guide-prices/sync", auth, requireRole("admin"), wrap(async (req, res) => {
+  try {
+    res.json(await syncGuidePrices({ region: req.body.region, reason: "manual" }));
+  } catch (err) {
+    res.status(502).json({ error: err.message || "Could not reach Bantay Presyo." });
+  }
+}));
 
 app.post("/api/guide-prices", auth, requireRole("admin"), wrap(async (req, res) => {
   const { name, category, unit, averagePrice, minPrice, maxPrice, notes } = req.body;
@@ -502,7 +604,19 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: err.message || "Server error" });
 });
 
+function lanAddress() {
+  for (const list of Object.values(os.networkInterfaces())) {
+    for (const iface of list || []) {
+      if (iface.family === "IPv4" && !iface.internal) return iface.address;
+    }
+  }
+  return "localhost";
+}
+
 await db.initDb();
-app.listen(PORT, () => {
-  console.log(`PalayApp API on http://localhost:${PORT} (MySQL :${process.env.MYSQL_PORT || 3307})`);
+app.listen(PORT, "0.0.0.0", () => {
+  const lan = lanAddress();
+  console.log(`PalayUP API on http://localhost:${PORT} (MySQL :${process.env.MYSQL_PORT || 3307})`);
+  console.log(`PalayUP API on the network: http://${lan}:${PORT}`);
+  startBantayScheduler();
 });

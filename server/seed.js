@@ -17,7 +17,7 @@ export function createSeed() {
       phone: "+63 917 555 0100",
       avatar: "EC",
       location: {
-        address: "PalayApp HQ, 8 Harvest Tower",
+        address: "PalayUP HQ, 8 Harvest Tower",
         city: "Quezon City",
         province: "Metro Manila",
         lat: 14.676,
@@ -461,15 +461,15 @@ export function createSeed() {
   ];
 
   const settings = {
-    appName: "PalayApp",
+    appName: "PalayUP",
     tagline: "Fair farm prices. Direct from the field.",
     supportEmail: "hello@palayapp.com",
     supportPhone: "+63 917 555 0100",
     allowRegistration: true,
     guidePriceNote:
-      "Guide prices are weekly market averages uploaded by PalayApp. Farmers must set listing prices within each product’s min–max range so buyers see a fair comparison.",
+      "Guide prices are weekly market averages uploaded by PalayUP. Farmers must set listing prices within each product’s min–max range so buyers see a fair comparison.",
     noPaymentNote:
-      "PalayApp does not process payments. Buyers contact the farmer using the listed phone and location to arrange pickup or delivery.",
+      "PalayUP does not process payments. Buyers contact the farmer using the listed phone and location to arrange pickup or delivery.",
     orderFlow: ["queued", "confirmed", "preparing", "ready", "completed"],
     citiesServed: ["Nueva Ecija", "Benguet", "Davao del Sur", "Bukidnon", "Metro Manila", "Cebu"],
   };

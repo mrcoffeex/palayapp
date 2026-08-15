@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Bell, Search, SlidersHorizontal } from "lucide-react";
 import { useStore } from "../store.jsx";
 import { api } from "../api.js";
@@ -145,7 +145,7 @@ export function BuyerProduct() {
         <div className="space-y-4 px-4 py-5">
           <Card className="bg-forest-100">
             <p className="font-display text-2xl">You’re in the farmer’s queue.</p>
-            <p className="mt-2 text-sm text-forest-700">Call or visit using the details below. PalayApp does not collect payment.</p>
+            <p className="mt-2 text-sm text-forest-700">Call or visit using the details below. PalayUP does not collect payment.</p>
           </Card>
           <FarmerContact farmer={farmer} />
           <Button className="w-full" onClick={() => navigate("/buyer/orders")}>Track order</Button>
@@ -347,6 +347,9 @@ export function BuyerProfile() {
             <p className="text-xs text-forest-600">{n.body} · {when(n.createdAt)}</p>
           </Card>
         ))}
+        <Link to="/docs" className="block text-center text-sm font-semibold text-forest-800 underline">
+          Documentation
+        </Link>
         <Button variant="outline" className="w-full" onClick={async () => { await logout(); navigate("/login"); }}>
           Sign out
         </Button>

@@ -302,8 +302,24 @@ export async function initDb() {
   if (userCount === 0) await seedAll();
   else if (productCount === 0) await resetDb();
   await pool.query("INSERT IGNORE INTO counters (name, value) VALUES ('next', 2000)");
+  await ensureSessionColumns();
 
   console.log(`MySQL connected at ${config.host}:${config.port}/${config.database}`);
+}
+
+async function ensureSessionColumns() {
+  const [cols] = await pool.query(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'sessions'`,
+    [config.database]
+  );
+  const names = new Set(cols.map((c) => c.COLUMN_NAME));
+  if (!names.has("expires_at")) {
+    await pool.query("ALTER TABLE sessions ADD COLUMN expires_at DATETIME NULL");
+  }
+  if (!names.has("remember")) {
+    await pool.query("ALTER TABLE sessions ADD COLUMN remember TINYINT(1) NOT NULL DEFAULT 0");
+  }
 }
 
 export async function nextId(prefix) {
@@ -324,14 +340,36 @@ export async function getUserByEmail(email) {
 
 export async function getUserByToken(token) {
   const [rows] = await pool.query(
-    `SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token = ?`,
+    `SELECT u.* FROM sessions s
+     JOIN users u ON u.id = s.user_id
+     WHERE s.token = ? AND (s.expires_at IS NULL OR s.expires_at > NOW())`,
     [token]
   );
   return mapUser(rows[0], true);
 }
 
-export async function createSession(token, userId) {
-  await pool.query("INSERT INTO sessions (token, user_id, created_at) VALUES (?, ?, ?)", [token, userId, sqlDate()]);
+export function sessionExpiry(remember) {
+  const hours = remember ? 24 * 30 : 12;
+  return new Date(Date.now() + hours * 3600 * 1000).toISOString();
+}
+
+export async function createSession(token, userId, { remember = false } = {}) {
+  await pool.query(
+    "INSERT INTO sessions (token, user_id, created_at, expires_at, remember) VALUES (?, ?, ?, ?, ?)",
+    [token, userId, sqlDate(), sqlDate(sessionExpiry(remember)), remember ? 1 : 0]
+  );
+}
+
+export async function touchSession(token) {
+  if (!token) return;
+  await pool.query(
+    `UPDATE sessions SET expires_at = CASE
+       WHEN remember = 1 THEN DATE_ADD(NOW(), INTERVAL 30 DAY)
+       ELSE DATE_ADD(NOW(), INTERVAL 12 HOUR)
+     END
+     WHERE token = ? AND (expires_at IS NULL OR expires_at > NOW())`,
+    [token]
+  );
 }
 
 export async function deleteSession(token) {
@@ -351,6 +389,9 @@ export async function createUser(user) {
 export async function updateUser(id, fields) {
   const map = {
     name: "name",
+    email: "email",
+    password: "password",
+    role: "role",
     phone: "phone",
     farmName: "farm_name",
     avatar: "avatar",

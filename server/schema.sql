@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS sessions (
   token VARCHAR(64) PRIMARY KEY,
   user_id VARCHAR(32) NOT NULL,
   created_at DATETIME NOT NULL,
+  expires_at DATETIME NULL,
+  remember TINYINT(1) NOT NULL DEFAULT 0,
   CONSTRAINT fk_sessions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

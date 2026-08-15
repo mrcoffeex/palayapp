@@ -55,7 +55,7 @@ export function Assistant({ role }) {
           <div className="flex h-[min(720px,92vh)] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl">
             <div className="flex items-center justify-between bg-forest-900 px-5 py-4 text-white">
               <div>
-                <p className="font-display text-lg">PalayApp AI</p>
+                <p className="font-display text-lg">PalayUP AI</p>
                 <p className="text-xs text-forest-200 capitalize">{role} assistant</p>
               </div>
               <button onClick={() => setOpen(false)} className="rounded-full p-2 hover:bg-white/10">

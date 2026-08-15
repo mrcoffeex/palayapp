@@ -2,13 +2,14 @@
   "name": "palayapp",
   "private": true,
   "version": "1.0.0",
-  "description": "PalayApp — farm-to-buyer marketplace with prescribed pricing, order tracking, and role-based AI assistants.",
+  "description": "PalayUP — farm-to-buyer marketplace with prescribed pricing, order tracking, and role-based AI assistants.",
   "scripts": {
     "dev": "concurrently -n api,web -c green,cyan \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "install:all": "npm install --prefix server && npm install --prefix client",
-    "postinstall": "npm run install:all"
+    "postinstall": "npm run install:all",
+    "test": "npm test --prefix server && npm test --prefix client"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

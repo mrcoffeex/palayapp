@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test src/format.test.js src/useTableQuery.test.js src/api.session.test.js"
   },
   "dependencies": {
     "lucide-react": "^0.511.0",

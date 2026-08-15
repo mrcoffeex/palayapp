@@ -16,7 +16,7 @@ export function Logo({ light = false, compact = false }) {
       {!compact && (
         <span className="leading-tight">
           <span className={`block font-display text-[17px] font-semibold tracking-tight ${light ? "text-white" : "text-forest-950"}`}>
-            PalayApp
+            PalayUP
           </span>
           <span className={`block text-[11px] font-medium ${light ? "text-forest-200" : "text-forest-600"}`}>
             Farm to buyer, fairly
@@ -120,6 +120,68 @@ export function Modal({ title, onClose, children, wide }) {
           </button>
         </div>
         {children}
+      </div>
+    </div>
+  );
+}
+
+export function SortTh({ column, sortKey, sortDir, onSort, children, className = "" }) {
+  const active = sortKey === column;
+  return (
+    <th className={`px-4 py-3 ${className}`}>
+      <button
+        type="button"
+        onClick={() => onSort(column)}
+        className={`inline-flex items-center gap-1 uppercase tracking-wide ${
+          active ? "font-bold text-forest-900" : "font-semibold text-forest-600"
+        }`}
+      >
+        {children}
+        <span aria-hidden className="text-[10px]">
+          {active ? (sortDir === "asc" ? "↑" : "↓") : "↕"}
+        </span>
+      </button>
+    </th>
+  );
+}
+
+export function TablePager({ page, pageCount, total, from, to, pageSize, onPage, onPageSize }) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-forest-50 px-4 py-3 text-xs text-forest-600">
+      <p>
+        {total ? `${from}–${to} of ${total}` : "0 results"}
+      </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <select
+          value={pageSize}
+          onChange={(e) => onPageSize(Number(e.target.value))}
+          className="rounded-xl border border-forest-200 bg-white px-2 py-1.5 text-xs outline-none focus:border-forest-500"
+        >
+          {[10, 25, 50].map((n) => (
+            <option key={n} value={n}>
+              {n} / page
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          disabled={page <= 1}
+          onClick={() => onPage(page - 1)}
+          className="rounded-xl border border-forest-200 px-2.5 py-1.5 font-semibold disabled:opacity-40"
+        >
+          Prev
+        </button>
+        <span className="tabular-nums">
+          {page} / {pageCount}
+        </span>
+        <button
+          type="button"
+          disabled={page >= pageCount}
+          onClick={() => onPage(page + 1)}
+          className="rounded-xl border border-forest-200 px-2.5 py-1.5 font-semibold disabled:opacity-40"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

@@ -4,8 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node --watch-path=index.js --watch-path=db.js --watch-path=seed.js --watch-path=ai.js index.js",
-    "start": "node index.js"
+    "dev": "node --watch-path=index.js --watch-path=db.js --watch-path=seed.js --watch-path=ai.js --watch-path=bantayPresyo.js index.js",
+    "start": "node index.js",
+    "test": "node --test tests/*.test.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

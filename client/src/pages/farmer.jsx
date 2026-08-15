@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, ChevronUp, ImagePlus, Plus, Sparkles } from "lucide-react";
 import { useStore } from "../store.jsx";
 import { api } from "../api.js";
@@ -494,6 +494,9 @@ export function FarmerProfile() {
             <p className="mt-1 text-[11px] text-forest-500">{when(n.createdAt)}</p>
           </Card>
         ))}
+        <Link to="/docs" className="block text-center text-sm font-semibold text-forest-800 underline">
+          Documentation
+        </Link>
         <Button
           variant="outline"
           className="w-full"

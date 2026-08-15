@@ -1,4 +1,4 @@
-# PalayApp
+# PalayUP
 
 Farm-to-buyer marketplace with prescribed pricing, order queues, and a role-based AI assistant. There is **no in-app payment** — buyers receive the farmer’s location and contact details and arrange pickup or delivery directly.
 
@@ -39,6 +39,16 @@ npm run dev
 
 - Web / apps: [http://localhost:5173](http://localhost:5173)
 - API: [http://localhost:4000](http://localhost:4000)
+
+### Open on other devices on the same network
+
+The client and API listen on all network interfaces. After `npm run dev`, Vite prints a **Network** URL. On a phone or another computer on the same Wi‑Fi, open:
+
+`http://<your-computer-ip>:5173`
+
+The terminal also prints the API LAN address (`http://<your-computer-ip>:4000`). Use the Vite URL for the app — `/api` and `/uploads` are proxied automatically.
+
+If another device cannot connect, allow incoming connections for Node/Vite in macOS Firewall (System Settings → Network → Firewall).
 
 On a desktop browser, farmer and buyer views render inside a phone frame. On a phone, they fill the screen.
 
