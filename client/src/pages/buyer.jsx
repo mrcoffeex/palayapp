@@ -145,7 +145,7 @@ export function BuyerProduct() {
         <div className="space-y-4 px-4 py-5">
           <Card className="bg-forest-100">
             <p className="font-display text-2xl">You’re in the farmer’s queue.</p>
-            <p className="mt-2 text-sm text-forest-700">Call or visit using the details below. AgriTrackture does not collect payment.</p>
+            <p className="mt-2 text-sm text-forest-700">Call or visit using the details below. PalayApp does not collect payment.</p>
           </Card>
           <FarmerContact farmer={farmer} />
           <Button className="w-full" onClick={() => navigate("/buyer/orders")}>Track order</Button>

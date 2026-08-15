@@ -1,8 +1,8 @@
 {
-  "name": "agritrackture",
+  "name": "palayapp",
   "private": true,
   "version": "1.0.0",
-  "description": "AgriTrackture — farm-to-buyer marketplace with prescribed pricing, order tracking, and role-based AI assistants.",
+  "description": "PalayApp — farm-to-buyer marketplace with prescribed pricing, order tracking, and role-based AI assistants.",
   "scripts": {
     "dev": "concurrently -n api,web -c green,cyan \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "dev:server": "npm run dev --prefix server",

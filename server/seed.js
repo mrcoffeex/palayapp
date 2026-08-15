@@ -11,13 +11,13 @@ export function createSeed() {
     {
       id: "usr_admin",
       name: "Elena Cruz",
-      email: "admin@agritrackture.com",
+      email: "admin@palayapp.com",
       password: hash("Admin@123"),
       role: "admin",
       phone: "+63 917 555 0100",
       avatar: "EC",
       location: {
-        address: "AgriTrackture HQ, 8 Harvest Tower",
+        address: "PalayApp HQ, 8 Harvest Tower",
         city: "Quezon City",
         province: "Metro Manila",
         lat: 14.676,
@@ -30,7 +30,7 @@ export function createSeed() {
       id: "usr_farmer_1",
       name: "Rosa Mendoza",
       farmName: "Green Valley Farm",
-      email: "rosa@agritrackture.com",
+      email: "rosa@palayapp.com",
       password: hash("Farmer@123"),
       role: "farmer",
       phone: "+63 918 221 4470",
@@ -50,7 +50,7 @@ export function createSeed() {
       id: "usr_farmer_2",
       name: "Juan Dela Cruz",
       farmName: "Highland Harvest",
-      email: "juan@agritrackture.com",
+      email: "juan@palayapp.com",
       password: hash("Farmer@123"),
       role: "farmer",
       phone: "+63 927 334 8812",
@@ -70,7 +70,7 @@ export function createSeed() {
       id: "usr_farmer_3",
       name: "Maria Santos",
       farmName: "Sunshine Orchard",
-      email: "maria@agritrackture.com",
+      email: "maria@palayapp.com",
       password: hash("Farmer@123"),
       role: "farmer",
       phone: "+63 919 776 2201",
@@ -90,7 +90,7 @@ export function createSeed() {
       id: "usr_farmer_4",
       name: "Pedro Ramirez",
       farmName: "Cornucopia Fields",
-      email: "pedro@agritrackture.com",
+      email: "pedro@palayapp.com",
       password: hash("Farmer@123"),
       role: "farmer",
       phone: "+63 915 442 1188",
@@ -109,7 +109,7 @@ export function createSeed() {
     {
       id: "usr_buyer_1",
       name: "Ana Reyes",
-      email: "ana@agritrackture.com",
+      email: "ana@palayapp.com",
       password: hash("Buyer@123"),
       role: "buyer",
       phone: "+63 916 880 3344",
@@ -127,7 +127,7 @@ export function createSeed() {
     {
       id: "usr_buyer_2",
       name: "Carlo Lim",
-      email: "carlo@agritrackture.com",
+      email: "carlo@palayapp.com",
       password: hash("Buyer@123"),
       role: "buyer",
       phone: "+63 917 221 0098",
@@ -145,7 +145,7 @@ export function createSeed() {
     {
       id: "usr_buyer_3",
       name: "Lisa Tan",
-      email: "lisa@agritrackture.com",
+      email: "lisa@palayapp.com",
       password: hash("Buyer@123"),
       role: "buyer",
       phone: "+63 928 665 4410",
@@ -461,15 +461,15 @@ export function createSeed() {
   ];
 
   const settings = {
-    appName: "AgriTrackture",
+    appName: "PalayApp",
     tagline: "Fair farm prices. Direct from the field.",
-    supportEmail: "hello@agritrackture.com",
+    supportEmail: "hello@palayapp.com",
     supportPhone: "+63 917 555 0100",
     allowRegistration: true,
     guidePriceNote:
-      "Guide prices are weekly market averages uploaded by AgriTrackture. Farmers must set listing prices within each product’s min–max range so buyers see a fair comparison.",
+      "Guide prices are weekly market averages uploaded by PalayApp. Farmers must set listing prices within each product’s min–max range so buyers see a fair comparison.",
     noPaymentNote:
-      "AgriTrackture does not process payments. Buyers contact the farmer using the listed phone and location to arrange pickup or delivery.",
+      "PalayApp does not process payments. Buyers contact the farmer using the listed phone and location to arrange pickup or delivery.",
     orderFlow: ["queued", "confirmed", "preparing", "ready", "completed"],
     citiesServed: ["Nueva Ecija", "Benguet", "Davao del Sur", "Bukidnon", "Metro Manila", "Cebu"],
   };

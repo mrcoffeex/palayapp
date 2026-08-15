@@ -42,7 +42,7 @@ export default function Register() {
     <div className="min-h-screen bg-forest-50 px-5 py-10">
       <div className="mx-auto max-w-lg">
         <Logo />
-        <h1 className="mt-8 font-display text-3xl text-forest-950">Join AgriTrackture</h1>
+        <h1 className="mt-8 font-display text-3xl text-forest-950">Join PalayApp</h1>
         <p className="mt-1 text-sm text-forest-600">Farmers list produce. Buyers order with a market price guide. No in-app payments.</p>
         <form onSubmit={submit} className="mt-8 space-y-4 rounded-3xl bg-white p-6 shadow-card">
           <Field label="I am a">

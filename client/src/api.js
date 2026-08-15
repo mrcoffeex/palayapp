@@ -1,4 +1,4 @@
-const TOKEN_KEY = "agritrackture_token";
+const TOKEN_KEY = "palayapp_token";
 
 async function request(path, { method = "GET", body, token } = {}) {
   const headers = { "Content-Type": "application/json" };

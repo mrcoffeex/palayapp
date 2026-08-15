@@ -21,7 +21,7 @@ function Guard({ roles, children }) {
   if (loading) {
     return (
       <div className="grid min-h-screen place-items-center bg-forest-50 text-forest-800">
-        <p className="font-display text-2xl">AgriTrackture</p>
+        <p className="font-display text-2xl">PalayApp</p>
       </div>
     );
   }

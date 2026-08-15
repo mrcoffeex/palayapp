@@ -4,15 +4,15 @@ import { Logo, Button, Field, Input } from "../components/ui.jsx";
 import { useStore } from "../store.jsx";
 
 const demos = [
-  { role: "Admin web", email: "admin@agritrackture.com", password: "Admin@123", blurb: "Track users, prices, orders, chats" },
-  { role: "Farmer app", email: "rosa@agritrackture.com", password: "Farmer@123", blurb: "Manage listings and the order queue" },
-  { role: "Buyer app", email: "ana@agritrackture.com", password: "Buyer@123", blurb: "Buy with prescribed market prices" },
+  { role: "Admin web", email: "admin@palayapp.com", password: "Admin@123", blurb: "Track users, prices, orders, chats" },
+  { role: "Farmer app", email: "rosa@palayapp.com", password: "Farmer@123", blurb: "Manage listings and the order queue" },
+  { role: "Buyer app", email: "ana@palayapp.com", password: "Buyer@123", blurb: "Buy with prescribed market prices" },
 ];
 
 export default function Login() {
   const { login } = useStore();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("ana@agritrackture.com");
+  const [email, setEmail] = useState("ana@palayapp.com");
   const [password, setPassword] = useState("Buyer@123");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -39,7 +39,7 @@ export default function Login() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-forest-300">Agriculture, tracked fairly</p>
           <h1 className="mt-4 font-display text-5xl leading-tight">Sell from the field. Buy with a clear price guide.</h1>
           <p className="mt-5 text-forest-100/90">
-            AgriTrackture connects farmers and buyers. Admins publish average market prices. Orders are queued and tracked.
+            PalayApp connects farmers and buyers. Admins publish average market prices. Orders are queued and tracked.
             Payment stays off-app — farmers share location and contact details.
           </p>
         </div>

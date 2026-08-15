@@ -1,4 +1,4 @@
-# AgriTrackture
+# PalayApp
 
 Farm-to-buyer marketplace with prescribed pricing, order queues, and a role-based AI assistant. There is **no in-app payment** — buyers receive the farmer’s location and contact details and arrange pickup or delivery directly.
 
@@ -23,15 +23,15 @@ MYSQL_HOST=localhost
 MYSQL_PORT=3307
 MYSQL_USER=root
 MYSQL_PASSWORD=
-MYSQL_DATABASE=agritrackture
+MYSQL_DATABASE=palayapp
 ```
 
-On startup the API creates the `agritrackture` database, tables, and demo seed if they do not exist yet.
+On startup the API creates the `palayapp` database, tables, and demo seed if they do not exist yet.
 
 ## Run locally
 
 ```bash
-cd agritrackture
+cd palayapp
 npm install
 npm run install:all
 npm run dev
@@ -46,9 +46,9 @@ On a desktop browser, farmer and buyer views render inside a phone frame. On a p
 
 | Role | Email | Password |
 | --- | --- | --- |
-| Admin | `admin@agritrackture.com` | `Admin@123` |
-| Farmer | `rosa@agritrackture.com` | `Farmer@123` |
-| Buyer | `ana@agritrackture.com` | `Buyer@123` |
+| Admin | `admin@palayapp.com` | `Admin@123` |
+| Farmer | `rosa@palayapp.com` | `Farmer@123` |
+| Buyer | `ana@palayapp.com` | `Buyer@123` |
 
 Other farmers: `juan@`, `maria@`, `pedro@` (same farmer password). Other buyers: `carlo@`, `lisa@` (same buyer password).
 

@@ -12,7 +12,7 @@ const empty = {
   conversations: [],
   messages: [],
   notifications: [],
-  settings: { appName: "AgriTrackture" },
+  settings: { appName: "PalayApp" },
 };
 
 export function StoreProvider({ children }) {

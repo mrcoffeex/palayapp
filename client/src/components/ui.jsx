@@ -16,7 +16,7 @@ export function Logo({ light = false, compact = false }) {
       {!compact && (
         <span className="leading-tight">
           <span className={`block font-display text-[17px] font-semibold tracking-tight ${light ? "text-white" : "text-forest-950"}`}>
-            AgriTrackture
+            PalayApp
           </span>
           <span className={`block text-[11px] font-medium ${light ? "text-forest-200" : "text-forest-600"}`}>
             Farm to buyer, fairly

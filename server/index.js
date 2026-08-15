@@ -105,7 +105,7 @@ function requireRole(...roles) {
 }
 
 app.get("/api/health", wrap(async (_req, res) => {
-  res.json({ ok: true, name: "AgriTrackture API", database: "mysql" });
+  res.json({ ok: true, name: "PalayApp API", database: "mysql" });
 }));
 
 app.post("/api/auth/login", wrap(async (req, res) => {
@@ -148,7 +148,7 @@ app.post("/api/auth/register", wrap(async (req, res) => {
     createdAt: new Date().toISOString(),
   };
   await db.createUser(user);
-  await db.notify("usr_admin", role === "farmer" ? "New farmer registered" : "New buyer registered", `${name} joined AgriTrackture.`, "user");
+  await db.notify("usr_admin", role === "farmer" ? "New farmer registered" : "New buyer registered", `${name} joined PalayApp.`, "user");
   const token = crypto.randomBytes(24).toString("hex");
   await db.createSession(token, user.id);
   res.json({ token, user: publicUser(user) });
@@ -504,5 +504,5 @@ app.use((err, _req, res, _next) => {
 
 await db.initDb();
 app.listen(PORT, () => {
-  console.log(`AgriTrackture API on http://localhost:${PORT} (MySQL :${process.env.MYSQL_PORT || 3307})`);
+  console.log(`PalayApp API on http://localhost:${PORT} (MySQL :${process.env.MYSQL_PORT || 3307})`);
 });

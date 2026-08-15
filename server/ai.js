@@ -20,7 +20,7 @@ export function answerAssistant({ role, user, message, db }) {
 
   if (!q) {
     return {
-      reply: "Ask me anything about products, orders, pricing, or how AgriTrackture works.",
+      reply: "Ask me anything about products, orders, pricing, or how PalayApp works.",
       suggestions: suggestionsFor(role),
     };
   }
@@ -58,7 +58,7 @@ export function answerAssistant({ role, user, message, db }) {
 function greeting(role, user) {
   const first = user.name.split(" ")[0];
   if (role === "admin") {
-    return `Hello ${first}. I’m the AgriTrackture admin assistant. I can summarize users, products, orders, chats, notifications, and guide prices.`;
+    return `Hello ${first}. I’m the PalayApp admin assistant. I can summarize users, products, orders, chats, notifications, and guide prices.`;
   }
   if (role === "farmer") {
     return `Hello ${first}. I can help you list produce within the market guide range, queue incoming orders, update status, and message buyers.`;
@@ -90,7 +90,7 @@ function adminAnswer(text, user, db, farmers, buyers, activeProducts) {
     const list = farmers
       .map((f) => `• ${f.farmName} — ${f.name} (${f.location.city}, ${f.location.province}) ${f.verified ? "✓ verified" : "pending"}`)
       .join("\n");
-    return { reply: `Farmers on AgriTrackture:\n${list}`, suggestions: ["Track buyers", "Open orders"] };
+    return { reply: `Farmers on PalayApp:\n${list}`, suggestions: ["Track buyers", "Open orders"] };
   }
   if (includesAny(text, ["buyer", "customer"])) {
     const list = buyers.map((b) => `• ${b.name} — ${b.location.city}`).join("\n");
@@ -221,7 +221,7 @@ function buyerAnswer(text, user, db, activeProducts) {
   if (includesAny(text, ["how do i order", "place order", "buy"])) {
     return {
       reply:
-        "Open a product, check the guide price, choose quantity, and place the order. AgriTrackture then shows the farmer’s phone and farm location. Arrange pickup or delivery directly — the app only tracks status, it does not take payment.",
+        "Open a product, check the guide price, choose quantity, and place the order. PalayApp then shows the farmer’s phone and farm location. Arrange pickup or delivery directly — the app only tracks status, it does not take payment.",
       suggestions: ["Track my order", "Contact a farmer"],
     };
   }
@@ -238,7 +238,7 @@ function buyerAnswer(text, user, db, activeProducts) {
   if (includesAny(text, ["contact", "phone", "location", "where", "farm"])) {
     return {
       reply:
-        "On every product and order you’ll see the farmer’s farm name, phone number, and full address. Call or message them in Chat to arrange collection. No payment happens inside AgriTrackture.",
+        "On every product and order you’ll see the farmer’s farm name, phone number, and full address. Call or message them in Chat to arrange collection. No payment happens inside PalayApp.",
       suggestions: ["Track my order", "Find good deals"],
     };
   }
