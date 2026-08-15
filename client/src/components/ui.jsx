@@ -134,11 +134,18 @@ export function Empty({ title, body }) {
   );
 }
 
-export function Stat({ label, value, hint }) {
+export function Stat({ label, value, hint, icon: Icon, warn = false, className = "" }) {
   return (
-    <Card>
-      <p className="text-xs font-semibold uppercase tracking-wide text-forest-600">{label}</p>
-      <p className="mt-2 font-display text-3xl text-forest-950">{value}</p>
+    <Card className={`${warn ? "border-amber-200 bg-amber-50" : ""} ${className}`}>
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-forest-600">{label}</p>
+        {Icon && (
+          <span className={`grid h-9 w-9 place-items-center rounded-2xl ${warn ? "bg-amber-100 text-amber-800" : "bg-forest-100 text-forest-800"}`}>
+            <Icon size={18} />
+          </span>
+        )}
+      </div>
+      <p className="mt-2 font-display text-3xl tracking-tight text-forest-950">{value}</p>
       {hint && <p className="mt-1 text-xs text-forest-600">{hint}</p>}
     </Card>
   );

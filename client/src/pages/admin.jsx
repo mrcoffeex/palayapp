@@ -1,57 +1,11 @@
-import { useMemo, useState } from "react";
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import { useState } from "react";
 import { useStore } from "../store.jsx";
 import { api } from "../api.js";
 import { peso, when, userById, locLine, priceTag } from "../format.js";
-import { Button, Card, Field, Input, Select, Textarea, Stat, Empty, Pill } from "../components/ui.jsx";
+import { Button, Card, Field, Input, Select, Textarea, Empty, Pill } from "../components/ui.jsx";
 import { ChatThread, StatusPill, Timeline, OrderItems } from "../components/commerce.jsx";
 
-export function AdminHome() {
-  const { data } = useStore();
-  const farmers = data.users.filter((u) => u.role === "farmer");
-  const buyers = data.users.filter((u) => u.role === "buyer");
-  const open = data.orders.filter((o) => !["completed", "cancelled"].includes(o.status));
-  const chart = useMemo(() => {
-    const days = [...Array(7)].map((_, i) => {
-      const d = new Date();
-      d.setDate(d.getDate() - (6 - i));
-      const key = d.toISOString().slice(0, 10);
-      const total = data.orders
-        .filter((o) => o.createdAt.slice(0, 10) === key)
-        .reduce((s, o) => s + o.total, 0);
-      return { name: d.toLocaleDateString("en-PH", { weekday: "short" }), total };
-    });
-    return days;
-  }, [data.orders]);
-
-  return (
-    <div className="space-y-6">
-      <header>
-        <p className="text-sm font-semibold text-forest-600">Admin console</p>
-        <h1 className="font-display text-4xl text-forest-950">Platform overview</h1>
-        <p className="mt-1 text-forest-600">Track farmers, buyers, products, prescribed prices, orders, and conversations.</p>
-      </header>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat label="Farmers" value={farmers.length} hint={`${farmers.filter((f) => f.verified).length} verified`} />
-        <Stat label="Buyers" value={buyers.length} hint="Active marketplace demand" />
-        <Stat label="Open orders" value={open.length} hint={`${peso(open.reduce((s, o) => s + o.total, 0))} in queue`} />
-        <Stat label="Listings" value={data.products.filter((p) => p.status === "active").length} hint={`${data.guidePrices.length} guide prices`} />
-      </div>
-      <Card>
-        <p className="text-sm font-semibold text-forest-800">Order value · last 7 days</p>
-        <div className="mt-4 h-56">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chart}>
-              <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-              <Tooltip formatter={(v) => peso(v)} />
-              <Area type="monotone" dataKey="total" stroke="#14532D" fill="#95D5B2" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
-    </div>
-  );
-}
+export { AdminHome } from "./admin-home.jsx";
 
 export function AdminUsers() {
   const { data, refresh } = useStore();

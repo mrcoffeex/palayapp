@@ -33,21 +33,29 @@ export function AdminShell() {
   const navigate = useNavigate();
   const unread = data.notifications.filter((n) => !n.read).length;
 
+  const signOut = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
-    <div className="min-h-screen bg-forest-50 lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="bg-forest-900 text-white">
-        <div className="flex items-center justify-between px-5 py-5">
+    <div className="min-h-screen bg-forest-50 lg:grid lg:grid-cols-[248px_1fr]">
+      <aside className="flex flex-col bg-forest-900 text-white lg:sticky lg:top-0 lg:h-screen">
+        <div className="flex items-center justify-between px-5 py-4">
           <Logo light />
+          <button className="rounded-xl p-2 text-forest-200 hover:bg-white/10 lg:hidden" onClick={signOut} aria-label="Sign out">
+            <LogOut size={16} />
+          </button>
         </div>
-        <p className="px-5 pb-3 text-[11px] uppercase tracking-wider text-forest-300">Admin console</p>
-        <nav className="space-y-1 px-3 pb-6">
+        <p className="hidden px-5 pb-3 text-[11px] uppercase tracking-wider text-forest-300 lg:block">Admin console</p>
+        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-1 lg:flex-col lg:space-y-1 lg:overflow-y-auto lg:pb-6">
           {links.map((l) => (
             <NavLink
               key={l.to}
               to={l.to}
               end={l.end}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium ${
+                `flex shrink-0 items-center gap-3 whitespace-nowrap rounded-2xl px-3 py-2.5 text-sm font-medium ${
                   isActive ? "bg-white text-forest-900" : "text-forest-100 hover:bg-white/10"
                 }`
               }
@@ -60,22 +68,18 @@ export function AdminShell() {
             </NavLink>
           ))}
         </nav>
-        <div className="px-5 pb-6">
+        <div className="hidden border-t border-white/10 px-5 py-5 lg:block">
           <p className="text-sm font-semibold">{data.me?.name}</p>
           <p className="text-xs text-forest-300">{data.me?.email}</p>
-          <button
-            className="mt-4 flex items-center gap-2 text-sm text-forest-200 hover:text-white"
-            onClick={async () => {
-              await logout();
-              navigate("/login");
-            }}
-          >
+          <button className="mt-4 flex items-center gap-2 text-sm text-forest-200 hover:text-white" onClick={signOut}>
             <LogOut size={16} /> Sign out
           </button>
         </div>
       </aside>
-      <main className="min-h-screen p-4 sm:p-8">
-        <Outlet />
+      <main className="min-h-screen p-4 sm:p-6 xl:p-8">
+        <div className="mx-auto max-w-[1400px]">
+          <Outlet />
+        </div>
       </main>
       <Assistant role="admin" />
     </div>
